@@ -106,14 +106,19 @@ classdef AircraftVisualizer
                  'EdgeColor',       'none',        ...
                  'FaceLighting',    'gouraud',     ...
                  'AmbientStrength', 0.15,...
-                 'Parent', obj.Animation.aircraft_transformation); 
+                 'Parent', obj.Animation.aircraft_transformation);
+             % Plot body frame axes
+             MakeFrame(zeros(3,1), [1 0 0;0 -1 0; 0 0 -1], 60, 10, 0.6, '', ...
+                 'Parent', obj.Animation.aircraft_transformation, ...
+                 'color', 'b');
              scatter3(obj.Animation.PlotAxes.ax_3d, 0,0,0,'filled');
              obj.render_plot();
         end
         
         function plot_external_forces_moments(obj)
             axes(obj.Animation.PlotAxes.ax_3d);
-            obj.Animation.force_vector = MakeArrow(zeros(3,1), [5;0;0],  15, 0.05,'F', 'color', 'g','Parent', obj.Animation.force_transformation);
+            MakeArrow(zeros(3,1), [5;0;0],  15, 0.05,'', 'color', 'g','Parent', obj.Animation.force_transformation);
+            
         end
         function obj = plot_inputs(obj, t, x)
             y_datasources = ["roll_evolution" "pitch_evolution" "yaw_evolution"];
@@ -192,21 +197,26 @@ classdef AircraftVisualizer
             obj = obj.plot_inputs(t, x);
             obj = obj.plot_text();
             % To let the display load for the user
-            pause(3)
+            pause(1)
             tic;
             for i = 1:length(t)
-                % Rotate the aircraft rigid-body
+                % Rotate the aircraft rigid-body to body frame
                 Mx = makehgtform('xrotate', phi(i));
                 My = makehgtform('yrotate', -theta(i));
                 Mz = makehgtform('zrotate', -psi(i));
                 set(obj.Animation.aircraft_transformation, 'Matrix', Mx*My*Mz);
                 
-                 % Force vector is attached to aircraft in positive
-                 % x-direction [1 0 0]
-                 force_rot = vrrotvec([1;0;0], [F_x(i);F_y(i);-F_z(i)]);
-                 Mr = makehgtform('axisrotate',force_rot(1:3),force_rot(4));
-                 Ms = makehgtform('scale', norm([F_x(i);F_y(i);F_z(i)]));
-                 set(obj.Animation.force_transformation, 'Matrix', Mx*My*Mz*Mr*Ms);
+                % Force vector is attached to body frame in positive
+                % x-direction [1 0 0]
+                
+                % Find angle to rotate [1 0 0] in body frmae to force
+                % in body frame
+                force_rot = vrrotvec([1;0;0], [F_x(i);F_y(i);-F_z(i)]);
+                Mr = makehgtform('axisrotate',force_rot(1:3),force_rot(4));
+                % Scale by force magnitude
+                Ms = makehgtform('scale', norm([F_x(i);F_y(i);F_z(i)]));
+                % Do transformation
+                set(obj.Animation.force_transformation, 'Matrix', Mx*My*Mz*Mr*Ms);
                 
                 % Update time text
                 set(obj.Animation.time_text_handle, 'String', sprintf('t = %3.2f sec',t(i)))

@@ -1,4 +1,4 @@
-function MakeFrame( offset, R, Scale, FS, SW, name, varargin )
+function h = MakeFrame( offset, R, Scale, FS, SW, name, varargin )
 %Draw reference frame:?
 % - 1st argument is the frame origin
 % - 2nd argument is the frame orientation (rotation matrix)
@@ -9,7 +9,6 @@ function MakeFrame( offset, R, Scale, FS, SW, name, varargin )
 
     propertyNames = {'edgeColor','facealpha','FaceLighting','SpecularStrength','Diffusestrength','AmbientStrength','SpecularExponent'};
     propertyValues = {'none',0.5,'gouraud',1,0.5,0.7,5};    
- 
     %% evaluate property specifications
     for argno = 1:2:nargin-6
         switch varargin{argno}
