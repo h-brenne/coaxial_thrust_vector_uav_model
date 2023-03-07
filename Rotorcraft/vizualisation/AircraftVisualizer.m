@@ -197,7 +197,7 @@ classdef AircraftVisualizer
             obj = obj.plot_inputs(t, x);
             obj = obj.plot_text();
             % To let the display load for the user
-            pause(1)
+            pause(3)
             tic;
             for i = 1:length(t)
                 % Rotate the aircraft rigid-body to body frame

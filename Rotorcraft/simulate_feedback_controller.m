@@ -11,9 +11,9 @@ model = CoaxialRotorcraftModel(@(t, x) external_input_controller(t, x));
 initial_height = 3;
 y_0 = zeros(12, 1);
 y_0(1) = 3; % n
-y_0(2) = 0; % e
+y_0(2) = 5; % e
 y_0(3) = -initial_height; % d
-y_0(10) = deg2rad(30); % theta
+y_0(10) = deg2rad(40); % theta
 y_0(11) = deg2rad(30); % phi
 y_0(12) = deg2rad(30); % psi
 
