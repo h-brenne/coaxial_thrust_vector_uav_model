@@ -1,6 +1,0 @@
-rotor = importrobot('Rotor_urdf/urdf/RotorAssembly.urdf');
-rotor.d
-massMatrix(rotor)
-showdetails(rotor)
-show(rotor)
-gui = interactiveRigidBodyTree(rotor,"MarkerScaleFactor",0.025);

@@ -1,42 +1,39 @@
-
-rotor = rigidBodyTree("DataFormat","column");
-base = rotor.Base;
-
-hub = rigidBody("hub");
-teetering_hub = rigidBody("teetering_hub");
-blade_side_hub_positive = rigidBody("blade_side_hub_positive");
-blade_side_hub_negative = rigidBody("blade_side_hub_negative");
-
-jnt_hub = rigidBodyJoint("hub_joint","revolute");
-jnt_teeter = rigidBodyJoint("jnt_teeter","revolute");
-jnt_lag_pitch_positive = rigidBodyJoint("jnt_lag_pitch_positive","revolute");
-jnt_lag_pitch_negative = rigidBodyJoint("jnt_lag_pitch_negative","revolute");
-
-jnt_teeter.JointAxis = [0 1 0];
-jnt_lag_pitch_positive.JointAxis = [0.5 0 0.5];
-jnt_lag_pitch_negative.JointAxis = [0.5 0 0.5];
-
-% Teetering heigth over hub
-setFixedTransform(jnt_teeter,trvec2tform([0 0 0.2]));
-setFixedTransform(jnt_lag_pitch_positive,trvec2tform([0.15 0 0]));
-setFixedTransform(jnt_lag_pitch_negative,trvec2tform([-0.15 0 0]));
-
-% Assemble
-
-hub.Joint = jnt_hub;
-teetering_hub.Joint = jnt_teeter;
-blade_side_hub_positive.Joint = jnt_lag_pitch_positive;
-blade_side_hub_negative.Joint = jnt_lag_pitch_negative;
-
-addBody(rotor, hub, base.Name);
-addBody(rotor, teetering_hub, hub.Name);
-addBody(rotor, blade_side_hub_positive, teetering_hub.Name);
-addBody(rotor, blade_side_hub_negative, teetering_hub.Name);
-
-figure("Name","Assemble Robot","Visible","on")
+rotor = importrobot('RotorAssemblyFullURDF_description/urdf/Rotor.urdf');
+rotor.DataFormat = 'column';
+rotor.Gravity= [0 0 -9.81];
 showdetails(rotor)
-show(rotor);
-drawnow;
 
-figure("Name","Interactive GUI")
-gui = interactiveRigidBodyTree(rotor,"MarkerScaleFactor",0.25);
+numJoints = numel(homeConfiguration(rotor));
+
+% Set up simulation parameters
+tspan = [0 5];
+q0 = zeros(numJoints,1);
+qd0 = zeros(numJoints,1);
+x0 = [q0; qd0];
+
+[t,y] = ode45(@(t,y) odefcn(t,y,rotor), tspan, x0);
+for i = 1:5:length(y)
+    ax = show(rotor, y(i,1:4)', "Frames", "off", 'Preserveplot', false, 'FastUpdate', true);
+    pause(0.05)
+end
+
+function external_moments = get_external_moments(q, qd)
+    % External moments consists of aerodynamic forces and motor torque
+    % aerodynamic_forces = bemt(q,qd);
+    external_moments = [0.0005;0;0;0];
+end
+
+function x_dot = odefcn(t,x, rotor)
+% 4 generalized variables. 
+% rotor position
+% teetering hinge
+% positive lag-pitch hinge
+% negative lag-pitch hinge
+  x_dot = zeros(8,1);
+  q = x(1:4);
+  qd = x(5:8);
+  external_moments = get_external_moments(q, qd);
+  qdd = forwardDynamics(rotor, q, qd, external_moments);
+  x_dot(1:4) = qd;
+  x_dot(5:8) = qdd;
+end
