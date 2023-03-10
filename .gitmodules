@@ -1,0 +1,4 @@
+[submodule "Rotor/src/libs/rotare_thrust_vectoring"]
+	path = Rotor/src/libs/rotare_thrust_vectoring
+	url = https://github.com/h-brenne/rotare_thrust_vectoring.git
+
