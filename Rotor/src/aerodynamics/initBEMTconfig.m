@@ -2,7 +2,7 @@ function BEMT_config = initBEMTconfig(filename)
 %initBEMTconfig Summary of this function goes here
 % Setup aerodynamics model
 import af_tools.*
-configFile = fullfile("../Rotor_Configs/TestRotor", filename);
+configFile = fullfile(filename);
 [Sim, Mod, Uflow, Uop, Uaf, Ublade] = validateconfig(configFile);
 Af = createairfoils(Uaf);
 
