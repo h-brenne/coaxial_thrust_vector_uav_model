@@ -1,6 +1,6 @@
 function BEMT_config = initBEMTconfig(filename)
-%initBEMTconfig Summary of this function goes here
-% Setup aerodynamics model
+%initBEMTconfig Setup aerodynamics model
+% 
 import af_tools.*
 configFile = fullfile(filename);
 [Sim, Mod, Uflow, Uop, Uaf, Ublade] = validateconfig(configFile);

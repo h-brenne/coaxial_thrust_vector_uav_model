@@ -14,7 +14,9 @@ for i = numel(Ublade):-1:1
 end
 
 Mod.solver = Mod.solvers{1};
-Op = Oper(Uop.altitude, Uop.speed, Uop.rpm, Uop.collective, Uflow.fluid);
+rpm = 5000;
+pitch = 10;
+Op = Oper(Uop.altitude, Uop.speed, rpm, pitch, Uflow.fluid);
 OpRot = OperRotor(Rot(1), Op);
 OpRot.nonDim = Sim.Misc.nonDim;
 
@@ -22,19 +24,5 @@ bemt(OpRot, Mod);
 
 dT = OpRot(1,1).ElPerf.dT;
 dQ = OpRot(1,1).ElPerf.dT;
-
-% Calculate moments in canonical frame
-M_psi = 0;
-M_zeta = 0;
-M_beta = 0;
-for i = 1:length(dT)
-    section_radius = OpRot.Rot.cutout + i*OpRot.Rot.Bl.dy;
-    hinge_distance = OpRot.Rot.cutout; % TODO: fix
-    M_psi = M_psi - section_radius*dQ(i);
-    M_zeta = M_zeta + (section_radius-hinge_distance)*dQ(i);
-    M_beta = M_beta + section_radius*dT(i);
-end
-
-% Go from canonical frame to hinge configuration frame
-% psi and beta is identical(Perhaps a sign change)
+plot(dT);
 

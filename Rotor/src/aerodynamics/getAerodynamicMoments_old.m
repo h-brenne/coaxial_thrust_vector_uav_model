@@ -1,4 +1,4 @@
-function M = getAerodynamicMoments(BEMT_config,q,q_d)
+function M = getAerodynamicMoments_old(BEMT_config,q,q_d)
 %getAerodynamicMoments Get aerodynamic moments from BEMT
 % TODO: cleanup input data. Calculate for both blades. Correct frames.
 
