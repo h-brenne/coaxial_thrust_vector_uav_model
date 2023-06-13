@@ -1,9 +1,9 @@
-function [f_ext, OpRot_positive, OpRot_negative] = getAerodynamicForcesAndMomentsPitchMethod(BEMT_config, rotor, q, q_d)
+function [f_ext, OpRot_positive, OpRot_negative] = getAerodynamicForcesAndMomentsPitchMethod(BEMT_config, rotor, q, q_d, omega)
 %getAerodynamicMoments Get aerodynamic forces and moments in base frame
 
 % Positive side hub
 OpRot = BEMT_config.OpRot;
-rpm = convangvel(q_d(1), 'rad/s', 'rpm');
+rpm = convangvel(omega, 'rad/s', 'rpm');
 
 
 [wrench_positive, OpRot_positive] = calculateWrench('side_hub_positive_1', rpm, 1);

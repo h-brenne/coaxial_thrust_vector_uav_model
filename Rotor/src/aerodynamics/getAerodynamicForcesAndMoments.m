@@ -1,16 +1,12 @@
-function [f_ext, OpRot_positive, OpRot_negative] = getAerodynamicForcesAndMoments(BEMT_config, rotor, q, q_d)
+function [f_ext, OpRot_positive, OpRot_negative] = getAerodynamicForcesAndMoments(BEMT_config, rotor, q, q_d, omega)
 %getAerodynamicMoments Get aerodynamic forces and moments in base frame
 
 % Positive side hub
 OpRot = BEMT_config.OpRot;
-rpm = convangvel(q_d(1), 'rad/s', 'rpm');
-%collective_pitch = max(0.01, 10);  + 0.5*rad2deg(q(3))); % TODO: Fix
+% Average rpm, setpoint. Used for momentum theory
+rpm = convangvel(omega, 'rad/s', 'rpm');
 
 [wrench_positive, OpRot_positive] = calculateWrench('side_hub_positive_1', rpm, 1);
-
-%% Negative side hub
-%collective_pitch = max(0.01, 10);% - 0.5*rad2deg(q(4))); % TODO: Fix
-
 [wrench_negative, OpRot_negative] = calculateWrench('side_hub_negative_1', rpm, -1);
 
 f_ext_1 = externalForce(rotor,'side_hub_positive_1',wrench_positive, q);
@@ -22,9 +18,9 @@ f_ext = f_ext_1 + f_ext_2;
         % Compute velocity in base frame
         v_global = J * q_d;
         % Get transform from base frame to side_hub frame
-        T = getTransform(rotor, q, side_hub);
+        H = getTransform(rotor, q, side_hub);
         % Extract the rotation matrix
-        R = T(1:3,1:3);
+        R = H(1:3,1:3);
         % Compute velocity in side_hub body frame
         v_body_angular = R.' * v_global(1:3);
         v_body_linear = R.' * v_global(4:6);
@@ -43,10 +39,11 @@ f_ext = f_ext_1 + f_ext_2;
         y_velocities = -multiplier*(v_body_linear(2) + cross_product_result(:,2));
         z_velocities = (v_body_linear(3) + cross_product_result(:,3));
         
-        Op = Oper(OpRot.Op.alt, OpRot.Op.speed, rpm, OpRot.Op.coll, OpRot.Op.Flow.fluid);
+        Op = Oper(OpRot.Op.alt, OpRot.Op.speed, rpm, OpRot.Op.coll,...
+            OpRot.Op.Flow.fluid, y_velocities, z_velocities);
         OpRot_result = OperRotor(OpRot.Rot, Op);
-        OpRot_result.ElPerf.tgSpeed = y_velocities;
-        OpRot_result.ElPerf.axSpeed = z_velocities;
+        %OpRot_result.ElPerf.tgSpeed = y_velocities;
+        %OpRot_result.ElPerf.axSpeed = z_velocities;
         bemt(OpRot_result, BEMT_config.Mod);
         
         dT = OpRot_result(1,1).ElPerf.dT;
