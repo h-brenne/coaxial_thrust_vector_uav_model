@@ -7,8 +7,8 @@
 <link name="base_link">
   <inertial>
     <origin xyz="7.735065992124888e-14 1.7881390223770156e-10 -0.013027047773476432" rpy="0 0 0"/>
-    <mass value="0.04838658295139721"/>
-    <inertia ixx="7e-06" iyy="7e-06" izz="1.3e-05" ixy="-0.0" iyz="-0.0" ixz="0.0"/>
+    <mass value="0.06630753960006285"/>
+    <inertia ixx="1e-05" iyy="1e-05" izz="1.8e-05" ixy="-0.0" iyz="-0.0" ixz="0.0"/>
   </inertial>
   <visual>
     <origin xyz="0 0 0" rpy="0 0 0"/>
@@ -27,9 +27,9 @@
 
 <link name="hub_1">
   <inertial>
-    <origin xyz="6.957655821438106e-08 2.323109289112266e-06 0.018963003712836154" rpy="0 0 0"/>
-    <mass value="0.06559900346349373"/>
-    <inertia ixx="2.1e-05" iyy="2e-05" izz="3.2e-05" ixy="-0.0" iyz="-0.0" ixz="0.0"/>
+    <origin xyz="6.408040703700102e-08 4.521367438227419e-06 0.02115033137979168" rpy="0 0 0"/>
+    <mass value="0.045875486442851464"/>
+    <inertia ixx="1.6e-05" iyy="1.5e-05" izz="2e-05" ixy="-0.0" iyz="-0.0" ixz="0.0"/>
   </inertial>
   <visual>
     <origin xyz="0.0 -0.0 0.025" rpy="0 0 0"/>
@@ -48,9 +48,9 @@
 
 <link name="teetering_hub_1">
   <inertial>
-    <origin xyz="3.359834451415809e-16 -2.0025242890718843e-10 -1.923287917815486e-13" rpy="0 0 0"/>
-    <mass value="0.004049823722403734"/>
-    <inertia ixx="0.0" iyy="0.0" izz="0.0" ixy="0.0" iyz="-0.0" ixz="-0.0"/>
+    <origin xyz="2.3047318532386023e-16 -2.0023549347411018e-10 -2.5549701243576806e-13" rpy="0 0 0"/>
+    <mass value="0.006675322687084224"/>
+    <inertia ixx="0.0" iyy="1e-06" izz="1e-06" ixy="0.0" iyz="-0.0" ixz="-0.0"/>
   </inertial>
   <visual>
     <origin xyz="-0.0 0.0 -0.028" rpy="0 0 0"/>
@@ -69,9 +69,9 @@
 
 <link name="side_hub_positive_1">
   <inertial>
-    <origin xyz="-0.06261744333947866 0.0008458341989499758 0.00040287234623248916" rpy="0 0 0"/>
-    <mass value="0.007284417638717653"/>
-    <inertia ixx="0.0" iyy="2.1e-05" izz="2.1e-05" ixy="0.0" iyz="0.0" ixz="-0.0"/>
+    <origin xyz="-0.0574472904647423 0.000772192735747795 0.0005609882602239658" rpy="0 0 0"/>
+    <mass value="0.009175981053557224"/>
+    <inertia ixx="0.0" iyy="2.6e-05" izz="2.6e-05" ixy="0.0" iyz="0.0" ixz="-0.0"/>
   </inertial>
   <visual>
     <origin xyz="0.015 -0.0 -0.028" rpy="0 0 0"/>
@@ -90,9 +90,9 @@
 
 <link name="side_hub_negative_1">
   <inertial>
-    <origin xyz="0.06261744333825596 -0.0008458284995726833 -0.00086722353949013" rpy="0 0 0"/>
-    <mass value="0.007284417637995881"/>
-    <inertia ixx="0.0" iyy="2.1e-05" izz="2.1e-05" ixy="0.0" iyz="-0.0" ixz="-0.0"/>
+    <origin xyz="0.05744729046094746 -0.0007721864572502097 -0.0009849110217392404" rpy="0 0 0"/>
+    <mass value="0.009175981053061298"/>
+    <inertia ixx="0.0" iyy="2.6e-05" izz="2.6e-05" ixy="0.0" iyz="-0.0" ixz="-0.0"/>
   </inertial>
   <visual>
     <origin xyz="-0.015 -0.0 -0.028" rpy="0 0 0"/>

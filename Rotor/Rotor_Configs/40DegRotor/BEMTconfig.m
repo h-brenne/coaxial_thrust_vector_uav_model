@@ -83,10 +83,10 @@ Sim.Misc.appli  = 'heli'; % Type of application ('helicopter', 'propeller', 'win
 % ==================================================================================================
 
 % Solvers
-Mod.solvers = 'stahlhut';  % BEMT Solver ('leishman', 'indfact', 'indvel', 'stahlhut', 'all')
+Mod.solvers = 'leishman';  % BEMT Solver ('leishman', 'indfact', 'indvel', 'stahlhut', 'all')
 
 % Extensions/corrections
-Mod.Ext.losses = 'none';    % Include losses using Prandtl formula ('none', 'hub', 'tip', 'both')
+Mod.Ext.losses = 'tip';    % Include losses using Prandtl formula ('none', 'hub', 'tip', 'both')
 
 % Numerical parameters
 Mod.Num.convCrit = 1e-3;  % Convergence criterion value,
@@ -112,7 +112,7 @@ Flow.fluid = 'air';  % Fluid ('air', 'seawater', 'freshwater')
 
 Op.speed      = 0;             % (Axial) Velocity, [m/s]
 Op.collective = 0;          % Collective pitch, [deg]
-Op.rpm        = 1000;  % Rotor angular velocity, [RPM]
+Op.rpm        = 1;  % Rotor angular velocity, [RPM]
 Op.altitude   = 0;                  % Flight altitude (only used if Flow.fluid = 'air'), [m]
 
 % ==================================================================================================
@@ -120,16 +120,12 @@ Op.altitude   = 0;                  % Flight altitude (only used if Flow.fluid =
 % ==================================================================================================
 
 % ------- FIRST AIRFOIL -------
-Airfoil.coordFile = 'libs/rotare_thrust_vectoring/src/airfoil_data/naca0015.dat';
+Airfoil.coordFile = 'libs/rotare_thrust_vectoring/src/airfoil_data/a18sm.dat';
 Airfoil.polarType = 'file'; % Type of polar to use ('file', 'polynomial')
 
 % If Airfoil.polarType == 'file'
 Airfoil.polarFile = 'libs/rotare_thrust_vectoring/src/airfoil_data/NACA_0015-Re_2e5-1e7.mat';
 Airfoil.extrapMethod = 'viterna'; % Polar extrapol. ('none', 'spline', 'viterna')
-
-% If Airfoil.polarType == 'polynomial'
-Airfoil.clPoly = [0.1101, 0.4409]; % Polynomial coefficients for Cl, [1/deg]
-Airfoil.cdPoly = [0.0006, -0.0042, 0.005]; % Polynomial coefficients for Cd, [1/deg]
 
 % ==================================================================================================
 % ================================= Blade and rotor geometry =======================================
@@ -140,16 +136,16 @@ Airfoil.cdPoly = [0.0006, -0.0042, 0.005]; % Polynomial coefficients for Cd, [1/
 % The blade elements will be interpolated using a spline rule between the available points.
 
 Blade.nBlades    = 1;  % Number of blades on the rotor, [-]
-Blade.pitchRef = 'zerolift';  % Reference for the pitch angle value ('zerolift', 'chordline')
+Blade.pitchRef = 'chordline';  % Reference for the pitch angle value ('zerolift', 'chordline')
 
 % Base dimensions (at least root and tip)
-Blade.radius   = [0.015, 0.19];     % Spanwise position of the blade base stations, [m]
-Blade.chord    = [0.02, 0.02]; % Chord at the blade base stations; [m]
-Blade.twist    = [10, 10];       % Twist at the blade base stations, [deg]
-Blade.iAirfoil = [1, 1];         % Index of the airfoil to use for the base stations, [-]
+Blade.radius   = [0.0594, 0.0964, 0.1779, 0.1894];     % Spanwise position of the blade base stations, [m]
+Blade.chord    = [0.026, 0.0235, 0.01475, 0.011]; % Chord at the blade base stations; [m]
+Blade.twist    = [19, 15, 6, 6];       % Twist at the blade base stations, [deg]
+Blade.iAirfoil = [1, 1, 1, 1];         % Index of the airfoil to use for the base stations, [-]
 
 % Discretization
-Blade.nElem = 5;  % Number of blade elements, [-]
+Blade.nElem = 50;  % Number of blade elements, [-]
 
 % Rotor base position
 Blade.hubPos = [0, 0, 0]; % Rotor center position (used for coaxial rotors), [m]
