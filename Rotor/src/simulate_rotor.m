@@ -13,8 +13,8 @@ BEMT_config.lag_pitch_hinge_offset = transform_positive_lag_pitch(1,4);
 numJoints = numel(homeConfiguration(rotor));
 
 % Velocities given in hz to match motor driver
-min_omega = 120.0*2*pi;
-max_omega = 120.0*2*pi;
+min_omega = 80.0*2*pi;
+max_omega = 80.0*2*pi;
 step_omega = 5.0*2*pi;
 min_amplitude = 0.0;
 max_amplitude = 0.3;
@@ -55,7 +55,7 @@ skip_steps = 1;
 [OpRot_positive, OpRot_negative, motor_torque, omega, amplitude, phase, omega_tilde] = recreate_data(BEMT_config,...
     rotor, y, t, omegas, amplitudes, phases, step_length_seconds, skip_steps);
 
-save('../Results/step026A_120hz_leishman.mat', 't','y', 'rotor', 'BEMT_config', 'OpRot_negative', 'OpRot_positive', ...
+save('../Results/step026A_80hz_leishman_new.mat', 't','y', 'rotor', 'BEMT_config', 'OpRot_negative', 'OpRot_positive', ...
     'motor_torque', 'omega', 'amplitude', 'phase', 'omega_tilde');
 
 

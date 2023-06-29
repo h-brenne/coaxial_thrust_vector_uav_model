@@ -1,6 +1,6 @@
 clear;
-experiment = 'step026A_80hz_leishman';
-save_data = false;
+experiment = 'multi_amp60hz_leishman';
+save_data = true;
 load(strcat('../Results/', experiment, '.mat'));
 
 % Get the default text interpreter
@@ -12,6 +12,13 @@ set(0, 'DefaultTextInterpreter', 'latex');
 total_thrust = [OpRot_positive.thrust] + [OpRot_negative.thrust];
 total_torque = [OpRot_positive.torque] + [OpRot_negative.torque];
 
+elperf_positive = [OpRot_positive.ElPerf];
+inflow_positive = [elperf_positive.inflAngle];
+reynolds_positive = [elperf_positive.reynolds];
+figure;
+plot(inflow_positive)
+legend('Inflow angle')
+
 motor_angle = mod(y(:, 1), 2*pi);
 motor_speed = y(:,5);
 teetering_angle = y(:,2);
@@ -19,10 +26,10 @@ side_hub_positive_angle = y(:,3);
 side_hub_negative_angle = y(:,4);
 
 % Given parameters
-step_length_s = 0.4;
+step_length_s = 0.3;
 min_amplitude = 0.0;
-max_amplitude = 0.26;
-amplitude_step = 0.26;
+max_amplitude = 0.4;
+amplitude_step = 0.05;
 transient_wait_s = 0.1;
 
 % Compute input_amplitude
@@ -118,7 +125,9 @@ for idx = 1:size(time_sets, 1)
     time_min = time_sets(idx, 1);
     time_max = time_sets(idx, 2);
     
-    [selected_motor_angle, selected_motor_speed, selected_teetering_angle, selected_side_hub_positive_angle, selected_side_hub_negative_angle, amp_speed, phase_speed, amp_teeter, phase_teeter, amp_pos, phase_pos, amp_neg, phase_neg] = analyzeData(y, t, time_min, time_max);
+    [selected_motor_angle, selected_motor_speed, selected_motor_acceleration, ...
+        selected_teetering_angle, selected_side_hub_positive_angle, selected_side_hub_negative_angle,...
+        amp_speed, phase_speed, amp_teeter, phase_teeter, amp_pos, phase_pos, amp_neg, phase_neg] = analyzeData(y, t, time_min, time_max);
     
     % Create scatter plots with motor angle on the x-axis and each variable on the y-axis
     figure(1);  % switch to the figure for Motor Speed
@@ -162,10 +171,10 @@ for idx = 1:size(time_sets, 1)
         phase_negs(idx) = rad2deg(phase_neg);
     
         % Create a table from selected data
-        T_selected = table(rad2deg(selected_motor_angle), selected_motor_speed,...
+        T_selected = table(rad2deg(selected_motor_angle), selected_motor_speed, selected_motor_acceleration,...
             rad2deg(selected_teetering_angle), rad2deg(selected_side_hub_positive_angle),...
             rad2deg(selected_side_hub_negative_angle), ...
-            'VariableNames', {'Motor_Angle', 'Motor_Speed', 'Teetering_Angle', 'Side_Hub_Positive_Angle', 'Side_Hub_Negative_Angle'});
+            'VariableNames', {'Motor_Angle', 'Motor_Speed', 'Motor_Acceleration' 'Teetering_Angle', 'Side_Hub_Positive_Angle', 'Side_Hub_Negative_Angle'});
         
         % Create a filename with the corresponding input amplitude value
         filename = ['../Results/' experiment '_amp_' num2str(input_amplitude(idx)) '.csv'];
@@ -209,6 +218,10 @@ scatter(selected_motor_angle, selected_motor_speed)
 xlabel('Motor Angle (rad)');
 ylabel('Motor Speed (rad/s)');
 figure;
+scatter(selected_motor_angle, selected_motor_acceleration)
+xlabel('Motor Angle (rad)');
+ylabel('Motor Acceleration (rad/s^2)');
+figure;
 scatter(selected_motor_angle, rad2deg(selected_teetering_angle))
 ylabel('Teetering Angle (deg)');
 xlabel('Motor Angle (rad)');
@@ -220,8 +233,8 @@ figure;
 plot(t, motor_torque)
 ylabel('Motor Torque [Nm]')
 
-function [selected_motor_angle, selected_motor_speed, selected_teetering_angle,...
-        selected_side_hub_positive_angle, selected_side_hub_negative_angle,...
+function [selected_motor_angle, selected_motor_speed, selected_motor_acceleration,...
+        selected_teetering_angle, selected_side_hub_positive_angle, selected_side_hub_negative_angle,...
         amp_speed, phase_speed, amp_teeter, phase_teeter, amp_pos, phase_pos,...
         amp_neg, phase_neg] = analyzeData(y, t, time_min, time_max)
     % Select data based on the time mask
@@ -233,13 +246,19 @@ function [selected_motor_angle, selected_motor_speed, selected_teetering_angle,.
     teetering_angle = y(:,2);
     side_hub_positive_angle = y(:,3);
     side_hub_negative_angle = y(:,4);
-
+    % Calculate motor acceleration by differentiating speed w.r.t time
+    temp_motor_acceleration = diff(motor_speed)./diff(t);
+    motor_acceleration = [temp_motor_acceleration(1); temp_motor_acceleration];
+    
     % Select the data
     selected_motor_angle = motor_angle(mask);
     selected_motor_speed = motor_speed(mask);
+    selected_motor_acceleration = motor_acceleration(mask);
     selected_teetering_angle = teetering_angle(mask);
     selected_side_hub_positive_angle = side_hub_positive_angle(mask);
     selected_side_hub_negative_angle = side_hub_negative_angle(mask);
+    
+    
 
     % Define bins for motor angle
     num_bins = 360;
